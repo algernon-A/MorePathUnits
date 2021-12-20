@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Language UniqueName="en" ReadableName="English">
+	<Translations>
+		<Translation ID="MPU_NAM" String="More PathUnits" />
+		<Translation ID="MPU_DESC" String="Increases the number of PathUnits (for pathfinding) supported by the game." />"
+	</Translations>
+</Language>
