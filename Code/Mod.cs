@@ -10,7 +10,7 @@ namespace MorePathUnits
     public class MPUMod : IUserMod
     {
         public static string ModName => "More PathUnits";
-        public static string Version => "0.0.4";
+        public static string Version => "0.0.5";
 
         public string Name => ModName + " " + Version;
         public string Description => Translations.Translate("MPU_DESC");
