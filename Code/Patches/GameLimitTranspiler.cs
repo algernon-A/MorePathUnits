@@ -23,6 +23,7 @@ namespace MorePathUnits
             yield return AccessTools.Method(typeof(PathFind), "PathFindImplementation");
             yield return AccessTools.Method(typeof(PathManager), "Awake");
             yield return AccessTools.Method(typeof(PathManager), nameof(PathManager.ReleasePath));
+            yield return AccessTools.Method(typeof(PathVisualizer), "AddPathsImpl");
         }
 
 
