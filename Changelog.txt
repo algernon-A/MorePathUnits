@@ -1,3 +1,6 @@
-﻿Version 0.2 -
+﻿- Update CitiesHarmony API to 2.1.0.
+
+
+Version 0.2 -
 
 - Fix path visualizer not correctly showing expanded paths
