@@ -5,7 +5,11 @@
 
 namespace MorePathUnits
 {
+    using System;
+    using System.Reflection;
+    using AlgernonCommons;
     using AlgernonCommons.Patching;
+    using ColossalFramework;
     using HarmonyLib;
 
     /// <summary>
@@ -14,8 +18,32 @@ namespace MorePathUnits
     public sealed class Patcher : PatcherBase
     {
         /// <summary>
-        ///  Apply Harmony patches to mods.
+        /// Updates TM:PE's internal data.
         /// </summary>
-        public void PatchMods() => ModLimitTranspiler.PatchMods(new Harmony(HarmonyID));
+        public void UpdateTMPE()
+        {
+            // Apply transpiler to TM:PE internal hardcoded limits.
+            ModLimitTranspiler.PatchMods(new Harmony(HarmonyID));
+
+            // Via simulation thread.
+            Singleton<SimulationManager>.instance.AddAction(() =>
+            {
+                Logging.KeyMessage("checking for TM:PE CustomPathManager");
+
+                Type tmpePMtype = Type.GetType("TrafficManager.Custom.PathFinding.CustomPathManager,TrafficManager", false);
+                if (tmpePMtype != null)
+                {
+                    Logging.Message("found TM:PE CustomPathManager type");
+
+                    // If there's an active TM:PE CustomPathManager instance, invoke the UpdateWithPathManagerValues method to reset TM:PE's internal values.
+                    FieldInfo tmpePMinstanceField = AccessTools.Field(tmpePMtype, "_instance");
+                    if (tmpePMinstanceField != null && tmpePMinstanceField.GetValue(null) is object tmpePathManager)
+                    {
+                        Logging.KeyMessage("setting TM:PE CustomPathManager values");
+                        AccessTools.Method(tmpePMtype, "UpdateWithPathManagerValues").Invoke(tmpePathManager, new object[] { Singleton<PathManager>.instance });
+                    }
+                }
+            });
+        }
     }
 }

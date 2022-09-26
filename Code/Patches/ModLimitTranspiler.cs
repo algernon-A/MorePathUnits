@@ -18,7 +18,7 @@ namespace MorePathUnits
         /// <summary>
         /// Determines list of target methods to patch - in this case, identified mods and methods with hardcoded CitizenUnit limits.
         /// </summary>
-        /// <returns>List of target methods to patch</returns>
+        /// <param name="harmony">Harmony instance.</param>
         internal static void PatchMods(Harmony harmony)
         {
             if (harmony == null)
@@ -40,7 +40,7 @@ namespace MorePathUnits
         }
 
         /// <summary>
-        /// Attempts to transpile hardcoded CitizenUnit limits in the given method from the given type. 
+        /// Attempts to transpile hardcoded PathUnit limits in the given method from the given type.
         /// </summary>
         /// <param name="harmony">Harmony instance.</param>
         /// <param name="type">Type to reflect.</param>

@@ -3,7 +3,6 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-
 namespace MorePathUnits
 {
     using System;
@@ -19,19 +18,28 @@ namespace MorePathUnits
     [HarmonyPatch(typeof(PathManager.Data), nameof(PathManager.Data.Deserialize))]
     public static class PathDeserialize
     {
+        /// <summary>
+        /// New PathUnit count.
+        /// </summary>
+        internal const int NewUnitCount = ExtraUnitCount + OriginalUnitCount;
+
         // Constants.
         private const int OriginalUnitCount = 262144;
         private const int ExtraUnitCount = OriginalUnitCount;
-        internal const int NewUnitCount = ExtraUnitCount + OriginalUnitCount;
 
         // Status flag - are we loading an expanded PathUnit array?
-        private static bool loadingExpanded = false;
+        private static bool _loadingExpanded = false;
+
+        /// <summary>
+        /// Gets the correct size to deserialize a saved game array.
+        /// </summary>
+        public static int DeserialiseSize => _loadingExpanded ? NewUnitCount : OriginalUnitCount;
 
         /// <summary>
         /// Harmony Transpilier for PathManager.Data.Deserialize to increase the size of the PathUnit array at deserialization.
         /// </summary>
-        /// <param name="instructions">Original ILCode instructions</param>
-        /// <returns></returns>
+        /// <param name="instructions">Original ILCode.</param>
+        /// <returns>Patched ILCode.</returns>
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             // Instruction parsing.
@@ -93,10 +101,10 @@ namespace MorePathUnits
             if (units.m_buffer.Length == NewUnitCount)
             {
                 // Detect if we're loading an expanded or original PathUnit array.
-                loadingExpanded = MetaData.LoadingExtended;
+                _loadingExpanded = MetaData.LoadingExtended;
 
                 // If we're expanding from vanilla saved data, ensure the PathUnit array is clear to start with.
-                if (!loadingExpanded)
+                if (!_loadingExpanded)
                 {
                     Logging.Message("expanding from Vanilla save data");
                     Array.Clear(units.m_buffer, 0, units.m_buffer.Length);
@@ -124,9 +132,8 @@ namespace MorePathUnits
 
             Logging.Message("starting PathManager.Data.Deserialize Postfix");
 
-
             // Only need to do this if converting from vanilla saved data.
-            if (!loadingExpanded)
+            if (!_loadingExpanded)
             {
                 // Clear unused elements array and list, and establish a debugging counter.
                 Logging.Message("resetting unused instances");
@@ -152,10 +159,5 @@ namespace MorePathUnits
 
             Logging.Message("finished PathManager.Data.Deserialize Postfix");
         }
-
-        /// <summary>
-        /// Returns the correct size to deserialize a saved game array.
-        /// </summary>
-        public static int DeserialiseSize => loadingExpanded ? NewUnitCount : OriginalUnitCount;
     }
 }

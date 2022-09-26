@@ -6,11 +6,24 @@
 namespace MorePathUnits
 {
     using AlgernonCommons.Patching;
+    using ICities;
 
     /// <summary>
     /// Main loading class: the mod runs from here.
     /// </summary>
     public class Loading : PatcherLoadingBase<OptionsPanel, Patcher>
     {
+        /// <summary>
+        /// Performs any actions upon successful creation of the mod.
+        /// E.g. Can be used to patch any other mods.
+        /// </summary>
+        /// <param name="loading">Loading mode (e.g. game or editor).</param>
+        protected override void CreatedActions(ILoading loading)
+        {
+            // Patch TM:PE and update its internal records.
+            PatcherManager<Patcher>.Instance.UpdateTMPE();
+
+            base.CreatedActions(loading);
+        }
     }
 }
