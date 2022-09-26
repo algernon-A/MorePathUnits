@@ -1,42 +1,42 @@
-﻿using ICities;
-using CitiesHarmony.API;
-
+﻿// <copyright file="Mod.cs" company="algernon (K. Algernon A. Sheppard)">
+// Copyright (c) algernon (K. Algernon A. Sheppard). All rights reserved.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
 
 namespace MorePathUnits
 {
+    using AlgernonCommons.Patching;
+    using AlgernonCommons.Translation;
+    using ICities;
+
     /// <summary>
     /// The base mod class for instantiation by the game.
     /// </summary>
-    public class MPUMod : IUserMod
+    public sealed class Mod : PatcherMod<OptionsPanel, Patcher>, IUserMod
     {
-        public static string ModName => "More PathUnits";
-        public static string Version => "1.0";
+        /// <summary>
+        /// Gets the mod's base display name (name only).
+        /// </summary>
+        public override string BaseName => "More PathUnits";
 
-        public string Name => ModName + " " + Version;
+        /// <summary>
+        /// Gets the mod's unique Harmony identfier.
+        /// </summary>
+        public override string HarmonyID => "com.github.algernon-A.csl.mpu";
+
+        /// <summary>
+        /// Gets the mod's description for display in the content manager.
+        /// </summary>
         public string Description => Translations.Translate("MPU_DESC");
 
+        /// <summary>
+        /// Saves settings file.
+        /// </summary>
+        public override void SaveSettings() => ModSettings.Save();
 
         /// <summary>
-        /// Called by the game when the mod is enabled.
+        /// Loads settings file.
         /// </summary>
-        public void OnEnabled()
-        {
-            // Apply Harmony patches via Cities Harmony.
-            // Called here instead of OnCreated to allow the auto-downloader to do its work prior to launch.
-            HarmonyHelper.DoOnHarmonyReady(() => Patcher.PatchAll());
-        }
-
-
-        /// <summary>
-        /// Called by the game when the mod is disabled.
-        /// </summary>
-        public void OnDisabled()
-        {
-            // Unapply Harmony patches via Cities Harmony.
-            if (HarmonyHelper.IsHarmonyInstalled)
-            {
-                Patcher.UnpatchAll();
-            }
-        }
+        public override void LoadSettings() => ModSettings.Load();
     }
 }

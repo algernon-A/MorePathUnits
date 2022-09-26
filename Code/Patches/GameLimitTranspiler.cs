@@ -1,11 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
-using System.Reflection.Emit;
-using HarmonyLib;
-
+﻿// <copyright file="GameLimitTranspiler.cs" company="algernon (K. Algernon A. Sheppard)">
+// Copyright (c) algernon (K. Algernon A. Sheppard). All rights reserved.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
 
 namespace MorePathUnits
 {
+    using System.Collections.Generic;
+    using System.Reflection;
+    using System.Reflection.Emit;
+    using AlgernonCommons;
+    using HarmonyLib;
+
     /// <summary>
     /// Harmony transpilers to replace hardcoded PathUnit limits in the game.
     /// </summary>
@@ -16,7 +21,7 @@ namespace MorePathUnits
         /// Determines list of target methods to patch - in this case, identified methods with hardcoded PathUnit limits.
         /// This includes PathFind.Awake and PathManager.Awake where the PathFind arrays are created; overriding the values here automatically creates arrays of the correct new size.
         /// </summary>
-        /// <returns>List of target methods to patch</returns>
+        /// <returns>List of target methods to patch.</returns>
         public static IEnumerable<MethodBase> TargetMethods()
         {
             yield return AccessTools.Method(typeof(PathFind), "Awake");
@@ -31,9 +36,9 @@ namespace MorePathUnits
         /// Harmony transpiler to replace hardcoded PathUnit limits.
         /// Finds ldc.i4 262144 (which is unique in game code to the PathUnit limit checks) and replaces the operand with our updated maximum.
         /// </summary>
-        /// <param name="original">Original (target) method</param>
-        /// <param name="instructions">Original ILCode</param>
-        /// <returns>Patched ILCode</returns>
+        /// <param name="original">Original (target) method.</param>
+        /// <param name="instructions">Original ILCode.</param>
+        /// <returns>Patched ILCode.</returns>
         public static IEnumerable<CodeInstruction> Transpiler(MethodBase original, IEnumerable<CodeInstruction> instructions)
         {
             // Instruction parsing.

@@ -1,12 +1,18 @@
-﻿using System;
-using System.Reflection.Emit;
-using System.Collections.Generic;
-using ColossalFramework;
-using HarmonyLib;
+﻿// <copyright file="PathDeserialize.cs" company="algernon (K. Algernon A. Sheppard)">
+// Copyright (c) algernon (K. Algernon A. Sheppard). All rights reserved.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
 
 
 namespace MorePathUnits
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Reflection.Emit;
+    using AlgernonCommons;
+    using ColossalFramework;
+    using HarmonyLib;
+
     /// <summary>
     /// Harmony patch to handle deserialization of game PathUnit data.
     /// </summary>
@@ -18,10 +24,8 @@ namespace MorePathUnits
         private const int ExtraUnitCount = OriginalUnitCount;
         internal const int NewUnitCount = ExtraUnitCount + OriginalUnitCount;
 
-
         // Status flag - are we loading an expanded PathUnit array?
         private static bool loadingExpanded = false;
-
 
         /// <summary>
         /// Harmony Transpilier for PathManager.Data.Deserialize to increase the size of the PathUnit array at deserialization.
@@ -75,7 +79,6 @@ namespace MorePathUnits
             }
         }
 
-
         /// <summary>
         /// Harmony Prefix patch for PathManager.Data.Deserialize to determine if this mod was active when the game was saved.
         /// Highest priority, to try and make sure array setup is done before any other mod tries to read the array.
@@ -107,7 +110,6 @@ namespace MorePathUnits
 
             Logging.Message("finished PathManager.Data.Deserialize Prefix");
         }
-
 
         /// <summary>
         /// Harmony Postfix patch for PathManager.Data.Deserialize to ensure proper unused item allocation and count after conversion from vanilla save data.
@@ -150,7 +152,6 @@ namespace MorePathUnits
 
             Logging.Message("finished PathManager.Data.Deserialize Postfix");
         }
-
 
         /// <summary>
         /// Returns the correct size to deserialize a saved game array.

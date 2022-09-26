@@ -1,8 +1,14 @@
-﻿using HarmonyLib;
-
+﻿// <copyright file="PathManager.cs" company="algernon (K. Algernon A. Sheppard)">
+// Copyright (c) algernon (K. Algernon A. Sheppard). All rights reserved.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
 
 namespace MorePathUnits
 {
+    using AlgernonCommons;
+    using AlgernonCommons.Patching;
+    using HarmonyLib;
+
     /// <summary>
     /// Harmony Postfix patch to transpile TM:PE.
     /// </summary>
@@ -17,7 +23,7 @@ namespace MorePathUnits
             Logging.Message("patching mods");
 
             // Patch mods.
-            Patcher.PatchMods();
+            PatcherManager<Patcher>.Instance.PatchMods();
 
             Logging.Message("mod patching complete");
         }

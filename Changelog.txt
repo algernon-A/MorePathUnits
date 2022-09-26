@@ -1,4 +1,7 @@
-﻿Version 1.0 -
+﻿- Implement AlgernonCommons
+
+
+Version 1.0 -
 
 - Update CitiesHarmony API to 2.1.0
 

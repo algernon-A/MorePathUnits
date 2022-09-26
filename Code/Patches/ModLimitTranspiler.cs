@@ -1,10 +1,15 @@
-﻿using System;
-using System.Reflection;
-using HarmonyLib;
-
+﻿// <copyright file="ModLimitTranspiler.cs" company="algernon (K. Algernon A. Sheppard)">
+// Copyright (c) algernon (K. Algernon A. Sheppard). All rights reserved.
+// Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+// </copyright>
 
 namespace MorePathUnits
 {
+    using System;
+    using System.Reflection;
+    using AlgernonCommons;
+    using HarmonyLib;
+
     /// <summary>
     /// Harmony transpilers to replace hardcoded CitizenUnit limits in mods.
     /// </summary>
@@ -23,7 +28,7 @@ namespace MorePathUnits
             }
 
             // TM:PE.
-            Assembly tmpe = ModUtils.GetEnabledAssembly("TrafficManager");
+            Assembly tmpe = AssemblyUtils.GetEnabledAssembly("TrafficManager");
             if (tmpe != null)
             {
                 Logging.Message("reflecting TM:PE");
@@ -34,13 +39,12 @@ namespace MorePathUnits
             }
         }
 
-
         /// <summary>
         /// Attempts to transpile hardcoded CitizenUnit limits in the given method from the given type. 
         /// </summary>
-        /// <param name="harmony">Harmony instance</param>
-        /// <param name="type">Type to reflect</param>
-        /// <param name="methodName">Method name to reflect</param>
+        /// <param name="harmony">Harmony instance.</param>
+        /// <param name="type">Type to reflect.</param>
+        /// <param name="methodName">Method name to reflect.</param>
         private static void PatchModMethod(Harmony harmony, Type type, string methodName)
         {
             // Check that reflection succeeded before proceeding,
