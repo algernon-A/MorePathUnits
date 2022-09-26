@@ -1,6 +1,6 @@
 ﻿Version 1.0 -
 
-- Update CitiesHarmony API to 2.1.0.
+- Update CitiesHarmony API to 2.1.0
 
 
 Version 0.2 -
