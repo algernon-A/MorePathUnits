@@ -9,6 +9,7 @@ namespace MorePathUnits
     using System.Collections.Generic;
     using System.Reflection.Emit;
     using AlgernonCommons;
+    using AlgernonCommons.Patching;
     using ColossalFramework;
     using HarmonyLib;
 
@@ -27,13 +28,26 @@ namespace MorePathUnits
         private const int OriginalUnitCount = 262144;
         private const int ExtraUnitCount = OriginalUnitCount;
 
+        // Indicates whether to automatically double limits on virgin savegames.
+        private static bool s_doubleLimit = true;
+
         // Status flag - are we loading an expanded PathUnit array?
-        private static bool _loadingExpanded = false;
+        private static bool s_loadingExpanded = false;
 
         /// <summary>
         /// Gets the correct size to deserialize a saved game array.
         /// </summary>
-        public static int DeserialiseSize => _loadingExpanded ? NewUnitCount : OriginalUnitCount;
+        public static int DeserialiseSize => s_loadingExpanded ? NewUnitCount : OriginalUnitCount;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether CitizenUnit limit doubling is in effect.
+        /// </summary>
+        internal static bool DoubleLimit
+        {
+            get => s_doubleLimit;
+
+            set => s_doubleLimit = value;
+        }
 
         /// <summary>
         /// Harmony Transpilier for PathManager.Data.Deserialize to increase the size of the PathUnit array at deserialization.
@@ -69,7 +83,7 @@ namespace MorePathUnits
                         inserted = true;
 
                         // Insert new instruction, calling DeserializeSize to determine correct buffer size to deserialize.
-                        yield return new CodeInstruction(OpCodes.Call, AccessTools.Property(typeof(PathDeserialize), nameof(PathDeserialize.DeserialiseSize)).GetGetMethod());
+                        yield return new CodeInstruction(OpCodes.Call, AccessTools.Property(typeof(PathDeserialize), nameof(DeserialiseSize)).GetGetMethod());
 
                         // Iterate forward, dropping all instructions until we reach our target (next stloc.2), then continue on as normal.
                         do
@@ -96,25 +110,48 @@ namespace MorePathUnits
         {
             Logging.Message("starting PathManager.Data.Deserialize Prefix");
 
+            // Detect if we're loading an expanded or original CitizenUnit array.
+            s_loadingExpanded = MetaData.LoadingExtended;
+
+            // If we're loading expanded data, automatically set double limit desearalization.
+            bool usingDouble = s_doubleLimit | s_loadingExpanded;
+
             // Check to see if PathUnit array has been correctly resized.
             Array32<PathUnit> units = Singleton<PathManager>.instance.m_pathUnits;
             if (units.m_buffer.Length == NewUnitCount)
             {
-                // Detect if we're loading an expanded or original PathUnit array.
-                _loadingExpanded = MetaData.LoadingExtended;
-
-                // If we're expanding from vanilla saved data, ensure the PathUnit array is clear to start with.
-                if (!_loadingExpanded)
+                // Are we using double limits (deliberately or because we're loading expanded data)?
+                if (usingDouble)
                 {
-                    Logging.Message("expanding from Vanilla save data");
-                    Array.Clear(units.m_buffer, 0, units.m_buffer.Length);
+                    // If we're expanding from vanilla saved data, ensure the PathUnit array is clear to start with.
+                    if (!s_loadingExpanded)
+                    {
+                        Logging.Message("expanding from Vanilla save data");
+                        Array.Clear(units.m_buffer, 0, units.m_buffer.Length);
+                    }
+                }
+                else
+                {
+                    // Not using double limits; resize back to vanilla (array will be completely refilled from save data, so no need to clear).
+                    Logging.KeyMessage("resetting to vanilla buffer size");
+                    Singleton<PathManager>.instance.m_pathUnits = new Array32<PathUnit>(PathManager.MAX_PATHUNIT_COUNT);
                 }
             }
             else
             {
-                // Buffer wasn't extended.
-                Logging.Error("PathUnit buffer not extended");
+                // Buffer wasn't extended - is this intentional?
+                if (!usingDouble)
+                {
+                    Logging.Error("PathUnit buffer not extended");
+                }
+                else
+                {
+                    Logging.Message("using existing vanilla buffer");
+                }
             }
+
+            // Patch TM:PE and update its internal records.
+            PatcherManager<Patcher>.Instance.UpdateTMPE();
 
             Logging.Message("finished PathManager.Data.Deserialize Prefix");
         }
@@ -133,7 +170,7 @@ namespace MorePathUnits
             Logging.Message("starting PathManager.Data.Deserialize Postfix");
 
             // Only need to do this if converting from vanilla saved data.
-            if (!_loadingExpanded)
+            if (!s_loadingExpanded)
             {
                 // Clear unused elements array and list, and establish a debugging counter.
                 Logging.Message("resetting unused instances");

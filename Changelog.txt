@@ -1,4 +1,5 @@
-﻿- Implement AlgernonCommons
+﻿- Add option to disable PathUnit array expansion (use vanilla buffer), for e.g. being able to open saves using expanded limits without having to use expanded limits on all saves
+- Implement AlgernonCommons
 
 
 Version 1.0 -
