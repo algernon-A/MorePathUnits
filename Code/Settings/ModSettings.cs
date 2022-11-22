@@ -21,12 +21,6 @@ namespace MorePathUnits
         private static readonly string SettingsFileName = Path.Combine(DataLocation.localApplicationData, "MorePathUnits.xml");
 
         /// <summary>
-        /// Gets or sets a value indicating whether to double PathUnits by default.
-        /// </summary>
-        [XmlElement("DoubleUnits")]
-        public bool XMLDoubleUnits { get => PathDeserialize.DoubleLimit; set => PathDeserialize.DoubleLimit = value; }
-
-        /// <summary>
         /// Loads settings from file.
         /// </summary>
         internal static void Load() => XMLFileUtils.Load<ModSettings>(SettingsFileName);

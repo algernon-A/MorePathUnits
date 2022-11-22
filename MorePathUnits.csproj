@@ -28,6 +28,8 @@
 	</ItemGroup>
 	<ItemGroup>
 		<_Translations Include="$(ProjectDir)/Translations/*.csv" />
+	</ItemGroup>
+	<ItemGroup>
 		<_TranslationsCore Include="../AlgernonCommons/Translations/*.csv" />
 	</ItemGroup>
 	<Target Name="DeployToModDirectory" AfterTargets="Build">
