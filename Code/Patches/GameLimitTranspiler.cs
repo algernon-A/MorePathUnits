@@ -31,7 +31,6 @@ namespace MorePathUnits
             yield return AccessTools.Method(typeof(PathVisualizer), "AddPathsImpl");
         }
 
-
         /// <summary>
         /// Harmony transpiler to replace hardcoded PathUnit limits.
         /// Finds ldc.i4 262144 (which is unique in game code to the PathUnit limit checks) and replaces the operand with our updated maximum.

@@ -9,13 +9,16 @@ namespace MorePathUnits
     using AlgernonCommons;
     using ColossalFramework;
 
+    /// <summary>
+    /// Game MetaData handling.
+    /// </summary>
     internal static class MetaData
     {
         // Metadata key for storing mod override flag in simulation maetadata.
         private static readonly string MetadataKey = "User/More PathUnits x2";
 
         /// <summary>
-        /// Returns whether (true) or not (false) this save was made using using an expanded PathUnit array.
+        /// Gets a value indicating whether (true) or not (false) this save was made using using an expanded PathUnit array.
         /// </summary>
         internal static bool LoadingExtended
         {
@@ -53,6 +56,7 @@ namespace MorePathUnits
         internal static void SetMetaData()
         {
             Logging.Message("setting simulation metadata");
+
             // Try to get simulation manager metadata dictionary of mod override flags.
             SimulationMetaData metaData = Singleton<SimulationManager>.instance.m_metaData;
             lock (metaData)

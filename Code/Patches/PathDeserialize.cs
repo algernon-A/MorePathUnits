@@ -3,7 +3,6 @@
 // Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 // </copyright>
 
-
 namespace MorePathUnits
 {
     using System;
@@ -19,19 +18,28 @@ namespace MorePathUnits
     [HarmonyPatch(typeof(PathManager.Data), nameof(PathManager.Data.Deserialize))]
     public static class PathDeserialize
     {
-        // Constants.
+        /// <summary>
+        /// Expanded PathUnit count.
+        /// </summary>
+        internal const int NewUnitCount = ExtraUnitCount + OriginalUnitCount;
+
+        // Private constants.
         private const int OriginalUnitCount = 262144;
         private const int ExtraUnitCount = OriginalUnitCount;
-        internal const int NewUnitCount = ExtraUnitCount + OriginalUnitCount;
 
         // Status flag - are we loading an expanded PathUnit array?
         private static bool loadingExpanded = false;
 
         /// <summary>
+        /// Gets the correct size to deserialize a saved game array.
+        /// </summary>
+        public static int DeserialiseSize => loadingExpanded ? NewUnitCount : OriginalUnitCount;
+
+        /// <summary>
         /// Harmony Transpilier for PathManager.Data.Deserialize to increase the size of the PathUnit array at deserialization.
         /// </summary>
-        /// <param name="instructions">Original ILCode instructions</param>
-        /// <returns></returns>
+        /// <param name="instructions">Original ILCode.</param>
+        /// <returns>Modified ILCode.</returns>
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             // Instruction parsing.
@@ -124,7 +132,6 @@ namespace MorePathUnits
 
             Logging.Message("starting PathManager.Data.Deserialize Postfix");
 
-
             // Only need to do this if converting from vanilla saved data.
             if (!loadingExpanded)
             {
@@ -152,10 +159,5 @@ namespace MorePathUnits
 
             Logging.Message("finished PathManager.Data.Deserialize Postfix");
         }
-
-        /// <summary>
-        /// Returns the correct size to deserialize a saved game array.
-        /// </summary>
-        public static int DeserialiseSize => loadingExpanded ? NewUnitCount : OriginalUnitCount;
     }
 }
