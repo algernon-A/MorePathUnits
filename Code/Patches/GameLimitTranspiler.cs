@@ -24,8 +24,6 @@ namespace MorePathUnits
         /// <returns>List of target methods to patch.</returns>
         public static IEnumerable<MethodBase> TargetMethods()
         {
-            yield return AccessTools.Method(typeof(PathFind), "Awake");
-            yield return AccessTools.Method(typeof(PathFind), "PathFindImplementation");
             yield return AccessTools.Method(typeof(PathManager), "Awake");
             yield return AccessTools.Method(typeof(PathManager), nameof(PathManager.ReleasePath));
             yield return AccessTools.Method(typeof(PathVisualizer), "AddPathsImpl");
