@@ -28,12 +28,17 @@ namespace MorePathUnits
         private const int ExtraUnitCount = OriginalUnitCount;
 
         // Status flag - are we loading an expanded PathUnit array?
-        private static bool loadingExpanded = false;
+        private static bool s_loadingExpanded = false;
 
         /// <summary>
         /// Gets the correct size to deserialize a saved game array.
         /// </summary>
-        public static int DeserialiseSize => loadingExpanded ? NewUnitCount : OriginalUnitCount;
+        public static int DeserialiseSize => s_loadingExpanded ? NewUnitCount : OriginalUnitCount;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether PathUnit limis should be automatically doubled on virgin savegames.
+        /// </summary>
+        internal static bool DoubleLimit { get; set; } = true;
 
         /// <summary>
         /// Harmony Transpilier for PathManager.Data.Deserialize to increase the size of the PathUnit array at deserialization.
@@ -69,7 +74,7 @@ namespace MorePathUnits
                         inserted = true;
 
                         // Insert new instruction, calling DeserializeSize to determine correct buffer size to deserialize.
-                        yield return new CodeInstruction(OpCodes.Call, AccessTools.Property(typeof(PathDeserialize), nameof(PathDeserialize.DeserialiseSize)).GetGetMethod());
+                        yield return new CodeInstruction(OpCodes.Call, AccessTools.Property(typeof(PathDeserialize), nameof(DeserialiseSize)).GetGetMethod());
 
                         // Iterate forward, dropping all instructions until we reach our target (next stloc.2), then continue on as normal.
                         do
@@ -96,24 +101,44 @@ namespace MorePathUnits
         {
             Logging.Message("starting PathManager.Data.Deserialize Prefix");
 
-            // Check to see if PathUnit array has been correctly resized.
-            Array32<PathUnit> units = Singleton<PathManager>.instance.m_pathUnits;
-            if (units.m_buffer.Length == NewUnitCount)
+            // If we're expanding from vanilla saved data, ensure the PathUnit array is clear to start with.
+            // Are we loading expanded data, or expanding from vanilla size?
+            s_loadingExpanded = MetaData.LoadingExtended;
+            if (s_loadingExpanded || DoubleLimit)
             {
-                // Detect if we're loading an expanded or original PathUnit array.
-                loadingExpanded = MetaData.LoadingExtended;
+                Logging.KeyMessage("expanding PathUnit buffer size to ", NewUnitCount);
+                Array32<PathUnit> expandedArray = new Array32<PathUnit>(NewUnitCount);
 
-                // If we're expanding from vanilla saved data, ensure the PathUnit array is clear to start with.
-                if (!loadingExpanded)
+                // Ensure expanded array is clear if we're not going to be overwriting it with expanded savegame data.
+                if (!s_loadingExpanded)
                 {
-                    Logging.Message("expanding from Vanilla save data");
-                    Array.Clear(units.m_buffer, 0, units.m_buffer.Length);
+                    Array.Clear(expandedArray.m_buffer, 0, expandedArray.m_buffer.Length);
+                }
+
+                // Set expanded array (using Singleton, not immediate instance; otherwise can end up with wrong instance if e.g. TM:PE custom manager is in effect).
+                Singleton<PathManager>.instance.m_pathUnits = expandedArray;
+
+                // Update TM:PE custom path manager.
+                Type tmpePathManagerType = Type.GetType("TrafficManager.Custom.PathFinding.CustomPathManager,TrafficManager", false);
+                if (tmpePathManagerType != null)
+                {
+                    Logging.KeyMessage("found TM:PE CustomPathManager");
+                    object tmpePathManagerInstance = AccessTools.Field(tmpePathManagerType, "_instance")?.GetValue(null);
+
+                    if (tmpePathManagerInstance == null)
+                    {
+                        Logging.KeyMessage("TM:PE CustomPathManager instance was null; hopefuly not an error");
+                    }
+                    else
+                    {
+                        Logging.Message("re-awakening TM:PE CustomPathManager");
+                        AccessTools.Method(tmpePathManagerType, "Awake").Invoke(tmpePathManagerInstance, null);
+                    }
                 }
             }
             else
             {
-                // Buffer wasn't extended.
-                Logging.Error("PathUnit buffer not extended");
+                Logging.Message("preserving Vanilla buffer size");
             }
 
             Logging.Message("finished PathManager.Data.Deserialize Prefix");
@@ -133,7 +158,7 @@ namespace MorePathUnits
             Logging.Message("starting PathManager.Data.Deserialize Postfix");
 
             // Only need to do this if converting from vanilla saved data.
-            if (!loadingExpanded)
+            if (!s_loadingExpanded)
             {
                 // Clear unused elements array and list, and establish a debugging counter.
                 Logging.Message("resetting unused instances");
