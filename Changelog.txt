@@ -1,4 +1,6 @@
-﻿- Add option to disable PathUnit array expansion (use vanilla buffer)
+﻿Version 1.1 -
+
+- Add option to disable PathUnit array expansion (use vanilla buffer)
 - Remove redundant PathFind lane limit patching
 - Implement AlgernonCommons
 
