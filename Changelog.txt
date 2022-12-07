@@ -1,4 +1,6 @@
-﻿- Fix vanilla pathfinding thread array assingment when TM:PE is not installed and expanded units are enabled
+﻿Version 1.1.1 -
+
+- Fix vanilla pathfinding thread array assingment when TM:PE is not installed and expanded units are enabled
 - Add detailed logging option
 
 
