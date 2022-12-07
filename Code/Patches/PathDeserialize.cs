@@ -7,6 +7,7 @@ namespace MorePathUnits
 {
     using System;
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Reflection.Emit;
     using AlgernonCommons;
     using ColossalFramework;
@@ -134,6 +135,23 @@ namespace MorePathUnits
                         Logging.Message("re-awakening TM:PE CustomPathManager");
                         AccessTools.Method(tmpePathManagerType, "Awake").Invoke(tmpePathManagerInstance, null);
                     }
+                }
+
+                // Update vanilla pathfinder.
+                PathManager pathManager = Singleton<PathManager>.instance;
+                FieldInfo pathFindUnits = AccessTools.Field(typeof(PathFind), "m_pathUnits");
+                if (AccessTools.Field(typeof(PathManager), "m_pathfinds")?.GetValue(pathManager) is PathFind[] pathFinds && pathFindUnits != null)
+                {
+                    // Update PathUnit array reference for all created PathFinds.
+                    for (int i = 0; i < pathFinds.Length; ++i)
+                    {
+                        Logging.Message("setting PathFind unit array reference for vanilla pathfinding thread ", i);
+                        pathFindUnits.SetValue(pathFinds[i], expandedArray);
+                    }
+                }
+                else
+                {
+                    Logging.Error("couldn't find vanilla PathFinds");
                 }
             }
             else

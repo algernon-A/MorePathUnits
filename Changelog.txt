@@ -1,4 +1,5 @@
-﻿- Add detailed logging option
+﻿- Fix vanilla pathfinding thread array assingment when TM:PE is not installed and expanded units are enabled
+- Add detailed logging option
 
 
 Version 1.1 -
