@@ -1,4 +1,7 @@
-﻿Version 1.1 -
+﻿- Add detailed logging option
+
+
+Version 1.1 -
 
 - Add option to disable PathUnit array expansion (use vanilla buffer)
 - Remove redundant PathFind lane limit patching

@@ -5,6 +5,7 @@
 
 namespace MorePathUnits
 {
+    using AlgernonCommons;
     using AlgernonCommons.Translation;
     using AlgernonCommons.UI;
     using ColossalFramework.UI;
@@ -54,6 +55,11 @@ namespace MorePathUnits
             currentY += boost1.height + TitleMargin;
             UILabel boost2 = UILabels.AddLabel(this, TitleMargin, currentY, Translations.Translate("EXPANDED_ALWAYS"), titleWidth, 0.9f);
             currentY += boost2.height + GroupMargin;
+
+            // Logging checkbox.
+            UICheckBox loggingCheck = UICheckBoxes.AddPlainCheckBox(this, TitleMargin, currentY, Translations.Translate("DETAIL_LOGGING"));
+            loggingCheck.isChecked = Logging.DetailLogging;
+            loggingCheck.eventCheckChanged += (c, isChecked) => { Logging.DetailLogging = isChecked; };
         }
     }
 }
