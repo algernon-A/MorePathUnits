@@ -1,4 +1,6 @@
-﻿- Add support for new TM:PE CustomPathManager reinitialization
+﻿Version 1.1.2 -
+
+- Add support for new TM:PE CustomPathManager reinitialization
 - Update AlgernonCommons
 
 
