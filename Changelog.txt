@@ -2,6 +2,7 @@
 
 - Add support for new TM:PE CustomPathManager reinitialization
 - Update AlgernonCommons
+- Update CitiesHarmony API to 2.2.0
 
 
 Version 1.1.1 -
