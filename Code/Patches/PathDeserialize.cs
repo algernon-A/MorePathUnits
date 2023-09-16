@@ -34,15 +34,15 @@ namespace MorePathUnits
         /// <summary>
         /// Gets the correct size to deserialize a saved game array.
         /// </summary>
-        public static int DeserialiseSize => s_loadingExpanded ? NewUnitCount : OriginalUnitCount;
+        public static int DeserializeSize => s_loadingExpanded ? NewUnitCount : OriginalUnitCount;
 
         /// <summary>
-        /// Gets or sets a value indicating whether PathUnit limis should be automatically doubled on virgin savegames.
+        /// Gets or sets a value indicating whether PathUnit limits should be automatically doubled on virgin savegames.
         /// </summary>
         internal static bool DoubleLimit { get; set; } = true;
 
         /// <summary>
-        /// Harmony Transpilier for PathManager.Data.Deserialize to increase the size of the PathUnit array at deserialization.
+        /// Harmony Transpiler for PathManager.Data.Deserialize to increase the size of the PathUnit array at deserialization.
         /// </summary>
         /// <param name="instructions">Original ILCode.</param>
         /// <returns>Modified ILCode.</returns>
@@ -75,7 +75,7 @@ namespace MorePathUnits
                         inserted = true;
 
                         // Insert new instruction, calling DeserializeSize to determine correct buffer size to deserialize.
-                        yield return new CodeInstruction(OpCodes.Call, AccessTools.Property(typeof(PathDeserialize), nameof(DeserialiseSize)).GetGetMethod());
+                        yield return new CodeInstruction(OpCodes.Call, AccessTools.Property(typeof(PathDeserialize), nameof(DeserializeSize)).GetGetMethod());
 
                         // Iterate forward, dropping all instructions until we reach our target (next stloc.2), then continue on as normal.
                         do
@@ -128,12 +128,12 @@ namespace MorePathUnits
 
                     if (tmpePathManagerInstance == null)
                     {
-                        Logging.KeyMessage("TM:PE CustomPathManager instance was null; hopefuly not an error");
+                        Logging.KeyMessage("TM:PE CustomPathManager instance was null; hopefully not an error");
                     }
                     else
                     {
-                        Logging.Message("re-awakening TM:PE CustomPathManager");
-                        AccessTools.Method(tmpePathManagerType, "Awake").Invoke(tmpePathManagerInstance, null);
+                        Logging.Message("re-initializing TM:PE CustomPathManager");
+                        AccessTools.Method(tmpePathManagerType, "Reinitialize").Invoke(tmpePathManagerInstance, new object[] { expandedArray });
                     }
                 }
 
