@@ -1,0 +1,7 @@
+﻿"LANGUAGE","Angol"
+"MOD_NAME","Több Útvonal"
+"MOD_DESCRIPTION","Növeli a játék által támogatott PathUnit (útkereséshez) számát."
+"INCREASE_UNITS","PathUnit limit növelése (alapjáték: 262 144)"
+"DOUBLE_UNITS","A PathUnit korlát duplázása 524.288-re"
+"EXPANDED_WARN","A kiterjesztett PathUnit korlátokkal mentett játékok NEM tölthetők újra e mod nélkül. Ez NEM visszafordítható."
+"EXPANDED_ALWAYS","A kiterjesztett PathUnit korlátokkal rendelkező mentések mindig a kiterjesztett korláttal lesznek betöltve."

@@ -1,0 +1,7 @@
+﻿"LANGUAGE","Українська"
+"MOD_NAME","More PathUnits"
+"MOD_DESCRIPTION","Збільшує кількість PathUnits (для шляхошукача), що підтримується грою."
+"INCREASE_UNITS","Збільшити ліміт PathUnit (базово: 262,144)"
+"DOUBLE_UNITS","Double PathUnit limit to 524,288"
+"EXPANDED_WARN","Games saved with expanded PathUnit limits will NOT be reloadable without this mod. This is NOT reversible."
+"EXPANDED_ALWAYS","Saves with expanded PathUnit limits will always be loaded with the expanded limit."
