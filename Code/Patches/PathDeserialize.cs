@@ -187,7 +187,7 @@ namespace MorePathUnits
                 for (uint i = 0; i < unitBuffer.Length; ++i)
                 {
                     // Check if this unit is valid.
-                    if ((unitBuffer[i].m_simulationFlags & PathUnit.FLAG_CREATED) == 0)
+                    if ((unitBuffer[i].m_simulationFlags & PathUnit.SimulationFlags.FLAG_CREATED) == 0)
                     {
                         // Invalid unit - properly release it to ensure m_units array's internals are correctly set.
                         unitArray.ReleaseItem(i);

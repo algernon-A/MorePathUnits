@@ -1,4 +1,9 @@
-﻿Version 1.1.2 -
+﻿Version 1.1.3 -
+
+- Compatibility with game version 1.21
+
+
+Version 1.1.2 -
 
 - Add support for new TM:PE CustomPathManager reinitialization
 - Update AlgernonCommons
